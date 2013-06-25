@@ -1,0 +1,20 @@
+.onLoad <- function(libname, pkgname) {
+  jvmr.alljars.directory <- system.file("java",package="jvmr")
+  jvmr.alljars.vector <- list.files(jvmr.alljars.directory,pattern=paste('.*\\.jar'),full.names=TRUE)
+  jvmr.alljars <- paste(jvmr.alljars.vector,collapse=.Platform$path.sep)
+  jvmr.jar <- list.files(jvmr.alljars.directory,pattern=paste(pkgname,'_.*\\.jar',sep=""),full.names=TRUE)
+  bsh.jar <- list.files(jvmr.alljars.directory,pattern=paste('bsh-.*\\.jar',sep=""),full.names=TRUE)
+  options(jvmr.alljars.directory=jvmr.alljars.directory)
+  options(jvmr.alljars.vector=jvmr.alljars.vector)
+  options(jvmr.alljars=jvmr.alljars)
+  options(jvmr.jar=jvmr.jar)
+  options(bsh.jar=bsh.jar)
+  pkg.env <- parent.env(environment())
+  assign(".jvmr.alljars.directory",jvmr.alljars.directory,envir=pkg.env)
+  assign(".jvmr.alljars.vector",jvmr.alljars.vector,envir=pkg.env)
+  assign(".jvmr.alljars",jvmr.alljars,envir=pkg.env)
+  assign(".jvmr.jar",jvmr.jar,envir=pkg.env)
+  assign(".bsh.jar",bsh.jar,envir=pkg.env)
+  .jpackage(pkgname, morePaths=c("."), lib.loc=libname)
+}
+
