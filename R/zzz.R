@@ -1,18 +1,21 @@
+get.urls <- function(partial.url) {
+  con <- file(paste(partial.url,"list.txt",sep="/"),open="r")
+  lines <- readLines(con)
+  close(con)
+  paste(partial.url,lines,sep="/")
+}
+
 download.jars <- function(path) {
   if ( ! file.exists(path) ) {
     tmpDir <- paste(path,"-tmp",sep="")
     dir.create(tmpDir,recursive=TRUE,showWarnings=FALSE)
     cwd <- getwd()
     setwd(tmpDir)
-    # jvmr.alljars.server <- "localhost:9000"
-    jvmr.alljars.server <- "dahl.byu.edu"
-    jvmr.alljars.url <- paste("http://",jvmr.alljars.server,"/software/jvmr/alljars/",jvmr.version,sep="")
-    jarURLs <- local({
-      con <- file(paste(jvmr.alljars.url,"list.txt",sep="/"),open="r")
-      lines <- readLines(con)
-      close(con)
-      paste(jvmr.alljars.url,lines,sep="/")
-    })
+    jarURLs <- tryCatch(get.urls(paste("http://dahl.byu.edu/software/jvmr/alljars/",jvmr.version,sep="")),
+      error = function(e) {
+        get.urls(paste("http://ddahl.org/alljars/",jvmr.version,sep=""))
+      }
+    )
     for ( jarURL in jarURLs ) {
       download.file(jarURL,basename(jarURL),mode = "wb",quiet=FALSE)
     }

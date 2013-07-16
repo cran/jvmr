@@ -1,18 +1,16 @@
 Package: jvmr
 Type: Package
 Title: Integration of R, Java, and Scala
-Version: 1.0.3
-Date: 2013-06-25
+Version: 1.0.4
+Date: 2013-07-16
 Author: David B. Dahl
 Maintainer: David B. Dahl <dahl@stat.byu.edu>
 URL: http://dahl.byu.edu/software/jvmr/
 Imports: rJava
 SystemRequirements: Java (>= 1.6)
-Description: Cross-platform, self-contained, and bi-directional
-        interface between R and Scala, Java, and other JVM-based
-        languages.
+Description: Cross-platform, self-contained, and bi-directional interface between R and Scala, Java, and other JVM-based languages.
 License: GPL (>= 2)
-Packaged: 2013-06-25 11:58:28 UTC; dahl
+Packaged: 2013-07-16 18:54:50 UTC; dahl
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2013-06-25 18:37:17
+Date/Publication: 2013-07-16 22:12:01

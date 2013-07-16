@@ -1,0 +1,23 @@
+1.0.4 (2013-07-15)
+  * Fixed problem org.ddahl.jvmr.MajorVersion string.
+  * Remove unneeded JAR for download list.
+  * When downloading JAR files, try second server in case the first isn't working.
+  * Updated LICENSE file to match license in DESCRIPTION.
+  * Added this NEWS file.
+
+1.0.3 (2013-06-25)
+  * Initial public release.
+  * JAR files download to installation directory.
+  * Accepted on CRAN.
+
+1.0.2 (2013-06-24)
+  * Rejected on CRAN because JAR files download to users home directory.
+
+1.0.1 (2013-06-22)
+  * Rejected on CRAN because JAR files made source package too big.
+
+1.0.0 (2013-06-21)
+  * Rejected on CRAN because:
+      - Didn't pass new tests of R-patch.
+      - JAR files made source packages too big.
+
