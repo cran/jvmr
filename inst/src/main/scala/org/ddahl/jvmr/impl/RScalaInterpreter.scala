@@ -1,18 +1,19 @@
 package org.ddahl.jvmr.impl
 
 import java.io._
+import scala.reflect.runtime.universe._
 
 class RScalaInterpreter private (settings : scala.tools.nsc.Settings, val outputBuffer : ByteArrayOutputStream, val outputPrintStream : PrintStream) extends scala.tools.nsc.interpreter.IMain(settings) {
 
   private var _lastResult : Request = null
 
-  def eval(line : String) = {
+  override def eval(line : String) = {
     val result = interpret(line)
     if ( result == scala.tools.nsc.interpreter.Results.Success ) _lastResult = prevRequestList.last
     else _lastResult = null
     result
   }
-  
+
   def getOutput : String = {
     outputPrintStream.flush
     val result = outputBuffer.toString("UTF8")
@@ -63,4 +64,3 @@ object RScalaInterpreter {
   }
 
 }
-
