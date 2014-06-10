@@ -3,13 +3,16 @@ package org.ddahl.jvmr.impl
 import java.io._
 import scala.reflect.runtime.universe._
 
-class RScalaInterpreter private (settings : scala.tools.nsc.Settings, val outputBuffer : ByteArrayOutputStream, val outputPrintStream : PrintStream) extends scala.tools.nsc.interpreter.IMain(settings) {
+class RScalaInterpreter private (settings : scala.tools.nsc.Settings, val outputBuffer : ByteArrayOutputStream, val outputPrintStream : PrintStream) {
 
+  val interpreter = new scala.tools.nsc.interpreter.IMain(settings)
+  type Request = interpreter.Request
   private var _lastResult : Request = null
 
-  override def eval(line : String) = {
+  def interpret(line: String) = interpreter.interpret(line)
+  def eval(line : String) = {
     val result = interpret(line)
-    if ( result == scala.tools.nsc.interpreter.Results.Success ) _lastResult = prevRequestList.last
+    if ( result == scala.tools.nsc.interpreter.Results.Success ) _lastResult = interpreter.prevRequestList.last
     else _lastResult = null
     result
   }
@@ -23,15 +26,15 @@ class RScalaInterpreter private (settings : scala.tools.nsc.Settings, val output
 
   def lastResult : Option[Any] = if ( _lastResult == null ) None else Some(_lastResult.lineRep.call("$result"))
 
-  def update(name : String, x : Any, boundType : String) = bind(name,boundType,x)
-  def update(name : String, x : Int) = bind(name,x)
-  def update(name : String, x : Float) = bind(name,x)
-  def update(name : String, x : Double) = bind(name,x)
-  def update(name : String, x : String) = bind(name,x)
-  def update(name : String, x : Array[Int]) = bind(name,"Array[Int]",x)
-  def update(name : String, x : Array[Float]) = bind(name,"Array[Float]",x)
-  def update(name : String, x : Array[Double]) = bind(name,"Array[Double]",x)
-  def update(name : String, x : Array[String]) = bind(name,"Array[String]",x)
+  def update(name : String, x : Any, boundType : String) = interpreter.bind(name,boundType,x)
+  def update(name : String, x : Int) = interpreter.bind(name,x)
+  def update(name : String, x : Float) = interpreter.bind(name,x)
+  def update(name : String, x : Double) = interpreter.bind(name,x)
+  def update(name : String, x : String) = interpreter.bind(name,x)
+  def update(name : String, x : Array[Int]) = interpreter.bind(name,"Array[Int]",x)
+  def update(name : String, x : Array[Float]) = interpreter.bind(name,"Array[Float]",x)
+  def update(name : String, x : Array[Double]) = interpreter.bind(name,"Array[Double]",x)
+  def update(name : String, x : Array[String]) = interpreter.bind(name,"Array[String]",x)
 
 }
 
