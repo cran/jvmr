@@ -47,7 +47,7 @@ package org.ddahl
 package object jvmr {
 
   /** Prints a String of the Major Version of [[org.ddahl.jvmr]] */
-  val MajorVersion = "1.0.4"
+  val MajorVersion = "2.11.1.1"
 
   /** Prints a String of the Full Version of [[org.ddahl.jvmr]] */
   val FullVersion = MajorVersion

@@ -1,4 +1,25 @@
-interpret <- function(interpreter,code,...,simplify=TRUE,echo.output=FALSE) UseMethod("interpret")
+stack.trace <- function(expr) {
+  tryCatch(expr,Exception = function(e){
+    print(e)
+    cat(paste(unlist(lapply(.jevalArray(e$jobj$getStackTrace()),function(x) { x$toString() })),collapse="\n"),"\n",sep="")
+  })
+}
+
+checkForException <- function() {
+  b <- .jgetEx(clear=TRUE)
+  x <- if ( ! is.null(b) ) {
+    cat(b$toString(),"\n")
+    cat(paste(unlist(lapply(.jevalArray(b$getStackTrace()),function(x) { x$toString() })),collapse="\n"),"\n",sep="")
+    b
+  } else NULL
+  x
+}
+
+
+
+
+
+interpret <- function(interpreter,code,...,eval.only=FALSE,simplify=TRUE,echo.output=FALSE) UseMethod("interpret")
 
 "interpret<-" <- function(interpreter,varname,type=NULL,echo.output=FALSE,value) UseMethod("interpret<-")
 
@@ -48,22 +69,23 @@ javaInterpreter <- function(...,use.jvmr.class.path=TRUE,include.cwd=TRUE) {
   return(a)
 }
 
-interpret.RJavaInterpreter <- function(interpreter,code,...,simplify=TRUE) {
+interpret.RJavaInterpreter <- function(interpreter,code,...,eval.only=FALSE,simplify=TRUE) {
   code <- substitute(code,...)
   z <- .jcall(interpreter$repl,"Ljava/lang/Object;","eval",code)
+  if ( eval.only ) return()
   return(tryCatch({
       clean(z,simplify)
-    }, error = function(e) return(invisible())))
+    }, error = function(e) {}))
 }
 
-"[.RJavaInterpreter" <- function(interpreter,code,...,simplify=TRUE) {
+"[.RJavaInterpreter" <- function(interpreter,code,...,eval.only=FALSE,simplify=TRUE) {
   return(interpret(interpreter,code,...,simplify=simplify))
 }
 
 "interpret<-.RJavaInterpreter" <- function(interpreter,varname,type=NULL,echo.output=FALSE,value) {
   if ( is.character(value) || is.numeric(value) || is.logical(value) ) {
     if ( is.character(value) && ( length(value) == 1 ) ) value <- .jcast(.jnew("java/lang/String",value),"java/lang/Object")
-    else if ( length(value) > 1 ) value <- .jcast(.jarray(value),"java/lang/Object")
+    else if ( length(value) > 1 ) value <- .jcast(.jarray(value,dispatch=TRUE),"java/lang/Object")
   } else if ( inherits(value,"jobjRef") ) value <- .jcast(value,"java/lang/Object")
   .jcall(interpreter$repl,"V","set",as.character(varname[1]),value)
   return(interpreter)
@@ -103,34 +125,38 @@ print.scala.output <- function(x,echo.output) {
   if ( echo.output ) cat(output)
 }
 
-interpret.RScalaInterpreter <- function(interpreter,code,...,simplify=TRUE,echo.output=FALSE) {
+interpret.RScalaInterpreter <- function(interpreter,code,...,eval.only=FALSE,simplify=TRUE,echo.output=FALSE) {
   code <- substitute(code,...)
-  .jcall(interpreter$repl,"Lscala/tools/nsc/interpreter/Results$Result;","eval",code)
+  z <- try(.jcall(interpreter$repl,"Ljava/lang/Object;","eval",code,check=FALSE))
+  zz <- checkForException()
   print.scala.output(interpreter,echo.output)
+  if ( ! is.null(zz) ) return(zz)
+  if ( eval.only ) return()
   return(tryCatch({
-      y <- .jcall(interpreter$repl,"Lscala/Option;","lastResult")
-      if ( (!is.null(y)) && .jcall(y,"Z","isDefined") ) {
-        z <- .jcall(y,"Ljava/lang/Object;","get")
-        clean(z,simplify)
-      }
-    }, error = function(e) return(invisible())))
+      clean(z,simplify)
+    }, error = function(e) {}))
 }
 
-"[.RScalaInterpreter" <- function(interpreter,code,...,simplify=TRUE) {
-  return(interpret(interpreter,code,...,simplify=simplify))
+"[.RScalaInterpreter" <- function(interpreter,code,...,eval.only=FALSE,simplify=TRUE,echo.output=FALSE) {
+  interpret(interpreter,code,...,eval.only=eval.only,simplify=simplify,echo.output=echo.output)
 }
 
 "interpret<-.RScalaInterpreter" <- function(interpreter,varname,type=NULL,echo.output=FALSE,value) {
-  if ( is.null(type) ) {
-    result <- try(.jcall(interpreter$repl,"Lscala/tools/nsc/interpreter/Results$Result;","update",varname,value),silent=TRUE)
-    if ( inherits(result,"try-error") ) {
-      type <- .jcall(.jcall(value,"Ljava/lang/Class;","getClass"),"Ljava/lang/String;","getName")
-      result <- try(.jcall(interpreter$repl,"Lscala/tools/nsc/interpreter/Results$Result;","update",varname,.jcast(value,"java/lang/Object"),type))
+  if ( is.character(value) || is.numeric(value) || is.logical(value) ) {
+    if ( length(value) == 1 ) {
+      result <- .jcall(interpreter$repl,"Lscala/tools/nsc/interpreter/Results$Result;","update",as.character(varname[1]),value)
+    } else {
+      result <- .jcall(interpreter$repl,"Lscala/tools/nsc/interpreter/Results$Result;","update",as.character(varname[1]),.jarray(value,dispatch=TRUE))
     }
-  } else {
-    .jcall(interpreter$repl,"Lscala/tools/nsc/interpreter/Results$Result;","update",varname,.jcast(value,"java/lang/Object"),type)
-  }
+  } else if ( inherits(value,"jobjRef") ) {
+    if ( any(is.null(type)) ) type <- .jclass(value)
+    value <- .jcast(value,"java/lang/Object")
+    result <- .jcall(interpreter$repl,"Lscala/tools/nsc/interpreter/Results$Result;","update",as.character(varname[1]),value,as.character(type[1]))
+  } else stop("Unsupported data type")
   print.scala.output(interpreter,echo.output)
+  if ( ! .jinherits(result,"scala.tools.nsc.interpreter.Results$Success$") ) {
+    stop("Could not make assignment. Consider specifying the type argument.\n")
+  }
   return(interpreter)
 }
 

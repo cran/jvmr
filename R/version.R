@@ -1,1 +1,1 @@
-jvmr.version <- '1.0.4'
+jvmr.version <- '2.11.1.1'

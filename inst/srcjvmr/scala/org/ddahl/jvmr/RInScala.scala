@@ -675,7 +675,7 @@ class RInScala private (command : Array[String]) extends Dynamic {
     */
   def prompt() = {
     println("Welcome to the R prompt!  Type R commands.  No prompt is provided.  Exit by pressing ^D.")
-    val reader = new scala.tools.jline.console.ConsoleReader()
+    val reader = new jline.console.ConsoleReader()
     val debugFlag = debug
     var line = reader.readLine()
     debug = true
@@ -771,21 +771,21 @@ object RInScala {
   private val CODE_INT_MATRIX = 7
   private val CODE_BOOLEAN_VECTOR = 8
   private val CODE_BOOLEAN_MATRIX = 9
-  private val COLOR_REDB="\033[1;41m"
-  private val COLOR_REDF="\033[31m"
-  private val COLOR_GREENB="\033[1;42m"
-  private val COLOR_GREENF="\033[1;32m"
-  private val COLOR_YELLOWB="\033[1;43m"
-  private val COLOR_YELLOWF="\033[1;33m"
-  private val COLOR_BLUEB="\033[1;44m"
-  private val COLOR_BLUEF="\033[1;34m"
-  private val COLOR_MAGENTAB="\033[1;45m"
-  private val COLOR_MAGENTAF="\033[1;35m"
-  private val COLOR_CYANB="\033[1;46m"
-  private val COLOR_CYANF="\033[1;36m"
-  private val COLOR_WHITEB="\033[1;47m"
-  private val COLOR_WHITEF="\033[1;37m"
-  private val COLOR_RESET="\033[0m"
+  private val COLOR_REDB="\u001b[1;41m"
+  private val COLOR_REDF="\u001b[31m"
+  private val COLOR_GREENB="\u001b[1;42m"
+  private val COLOR_GREENF="\u001b[1;32m"
+  private val COLOR_YELLOWB="\u001b[1;43m"
+  private val COLOR_YELLOWF="\u001b[1;33m"
+  private val COLOR_BLUEB="\u001b[1;44m"
+  private val COLOR_BLUEF="\u001b[1;34m"
+  private val COLOR_MAGENTAB="\u001b[1;45m"
+  private val COLOR_MAGENTAF="\u001b[1;35m"
+  private val COLOR_CYANB="\u001b[1;46m"
+  private val COLOR_CYANF="\u001b[1;36m"
+  private val COLOR_WHITEB="\u001b[1;47m"
+  private val COLOR_WHITEF="\u001b[1;37m"
+  private val COLOR_RESET="\u001b[0m"
 
   /** A `String` stating the type of operating system in use. */
   lazy val OS = System.getProperty("os.name").toLowerCase match {

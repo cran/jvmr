@@ -1,3 +1,9 @@
+2.11.1.0 (2014-06-19)
+  * Upgraded to Scala 2.11.1, beanshell2 2.1.8, and jline 2.12.
+  * Changed versioning scheme to clearly indicate the version of Scala.
+  * In Scala embedded in R, support assigning matrices to Scala's Array[Array[T]].
+  * Added eval.only logical to supress returning result of evaluation.
+
 1.0.4 (2013-07-15)
   * Fixed problem org.ddahl.jvmr.MajorVersion string.
   * Remove unneeded JAR for download list.

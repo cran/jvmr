@@ -10,7 +10,7 @@ These functions are the main interface to the Java and Scala interpreters embedd
 There are shortcuts using square brackets for each of these functions.  See the examples below.
 }
 \usage{
-interpret(interpreter, code, \dots, simplify = TRUE, echo.output = FALSE)
+interpret(interpreter, code, \dots, eval.only = FALSE, simplify = TRUE, echo.output = FALSE)
 interpret(interpreter, varname, type = NULL, echo.output = FALSE) <- value
 }
 \arguments{
@@ -21,6 +21,7 @@ interpret(interpreter, varname, type = NULL, echo.output = FALSE) <- value
 made in the Java or Scala code.  These substitutions must take the form \code{$\{d\}}
 in the Java or Scala code, where the number \code{d} is the argument
 number 1, 2, ..., 9.}
+    \item{eval.only}{When TRUE, no object is returned.  If FALSE (the default value), the result of the evaluation is returned.}
     \item{simplify}{When TRUE (the default value), an R object is returned when possible. If FALSE, the reference of the resulting Java object is returned.}
     \item{echo.output}{When FALSE (the default value), output from the Scala interpreter is not printed to the R session.  If TRUE, such output is printed in the R session.  This is not relevant for the Java interpreter.}
     \item{type}{an optional argument, which can be used to explicitly specify the type of the Java or Scala object.}
