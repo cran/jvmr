@@ -1,8 +1,8 @@
 .onLoad <- function(libname, pkgname) {
-  jvmr.alljars.directory <- system.file("java",package="jvmr")
+  jvmr.alljars.directory <- system.file("java",package=pkgname)
   jvmr.alljars.vector <- list.files(jvmr.alljars.directory,pattern=paste('.*\\.jar'),full.names=TRUE)
   jvmr.alljars <- paste(jvmr.alljars.vector,collapse=.Platform$path.sep)
-  jvmr.jar <- list.files(jvmr.alljars.directory,pattern=paste(pkgname,'_.*\\.jar',sep=""),full.names=TRUE)
+  jvmr.jar <- list.files(jvmr.alljars.directory,pattern=paste(pkgname,'_.*[0-9]\\.jar',sep=""),full.names=TRUE)
   bsh.jar <- list.files(jvmr.alljars.directory,pattern=paste('bsh-.*\\.jar',sep=""),full.names=TRUE)
   options(jvmr.alljars.directory=jvmr.alljars.directory)
   options(jvmr.alljars.vector=jvmr.alljars.vector)

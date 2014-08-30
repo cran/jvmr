@@ -1,16 +1,20 @@
 Package: jvmr
 Type: Package
 Title: Integration of R, Java, and Scala
-Version: 2.11.1.1
-Date: 2014-06-24
-Author: David B. Dahl
+Version: 2.11.2.1
+Date: 2014-08-30
+Authors@R: c(person(given="David B.",family="Dahl",role=c("aut","cre"),email="dahl@stat.byu.edu"),
+             person(family="Scala developers",role="ctb",comment="see http://scala-lang.org/"),
+             person(family="beanshell2 developers",role="ctb",comment="see https://code.google.com/p/beanshell2/"),
+             person(family="jline2 developers",role="ctb",comment="see https://github.com/jline/jline2"))
+Author: David B. Dahl [aut, cre], Scala developers [ctb] (see http://scala-lang.org/), beanshell2 developers [ctb] (see https://code.google.com/p/beanshell2/), jline2 developers [ctb] (see https://github.com/jline/jline2)
 Maintainer: David B. Dahl <dahl@stat.byu.edu>
 URL: http://dahl.byu.edu/software/jvmr/
 Imports: rJava
 SystemRequirements: Java (>= 1.6)
 Description: Cross-platform, self-contained, and bi-directional interface between R and Scala, Java, and other JVM-based languages.
 License: GPL (>= 2) | BSD_3_clause + file LICENSE
-Packaged: 2014-06-25 03:08:18 UTC; dahl
+Packaged: 2014-08-30 18:03:48 UTC; dahl
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2014-06-25 14:10:11
+Date/Publication: 2014-08-30 23:14:58

@@ -1,3 +1,14 @@
+2.11.2.1 (2014-08-30)
+  * Clarified how to obtain source for installed jars.
+
+2.11.2.0 (2014-08-29)
+  * Upgraded to Scala 2.11.2.
+  * Added '$' operator for accessing and setting variables.
+  * Scala and Java source files in keeping with CRAN policies.
+
+2.11.1.1 (2014-06-24)
+  * Cleaned up some licensing issues.
+
 2.11.1.0 (2014-06-19)
   * Upgraded to Scala 2.11.1, beanshell2 2.1.8, and jline 2.12.
   * Changed versioning scheme to clearly indicate the version of Scala.

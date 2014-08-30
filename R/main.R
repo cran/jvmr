@@ -71,7 +71,7 @@ javaInterpreter <- function(...,use.jvmr.class.path=TRUE,include.cwd=TRUE) {
 
 interpret.RJavaInterpreter <- function(interpreter,code,...,eval.only=FALSE,simplify=TRUE) {
   code <- substitute(code,...)
-  z <- .jcall(interpreter$repl,"Ljava/lang/Object;","eval",code)
+  z <- .jcall(interpreter[["repl"]],"Ljava/lang/Object;","eval",code)
   if ( eval.only ) return()
   return(tryCatch({
       clean(z,simplify)
@@ -87,7 +87,7 @@ interpret.RJavaInterpreter <- function(interpreter,code,...,eval.only=FALSE,simp
     if ( is.character(value) && ( length(value) == 1 ) ) value <- .jcast(.jnew("java/lang/String",value),"java/lang/Object")
     else if ( length(value) > 1 ) value <- .jcast(.jarray(value,dispatch=TRUE),"java/lang/Object")
   } else if ( inherits(value,"jobjRef") ) value <- .jcast(value,"java/lang/Object")
-  .jcall(interpreter$repl,"V","set",as.character(varname[1]),value)
+  .jcall(interpreter[["repl"]],"V","set",as.character(varname[1]),value)
   return(interpreter)
 }
 
@@ -121,13 +121,13 @@ scalaInterpreter <- function(...,use.jvmr.class.path=TRUE,include.cwd=TRUE,use.j
 
 print.scala.output <- function(x,echo.output) {
   # Get results from the PrintWriter buffer and use R's 'cat' method to display to the console.
-  output <- .jcall(x$repl,"Ljava/lang/String;","getOutput")
+  output <- .jcall(x[["repl"]],"Ljava/lang/String;","getOutput")
   if ( echo.output ) cat(output)
 }
 
 interpret.RScalaInterpreter <- function(interpreter,code,...,eval.only=FALSE,simplify=TRUE,echo.output=FALSE) {
   code <- substitute(code,...)
-  z <- try(.jcall(interpreter$repl,"Ljava/lang/Object;","eval",code,check=FALSE))
+  z <- try(.jcall(interpreter[["repl"]],"Ljava/lang/Object;","eval",code,check=FALSE))
   zz <- checkForException()
   print.scala.output(interpreter,echo.output)
   if ( ! is.null(zz) ) return(zz)
@@ -138,20 +138,24 @@ interpret.RScalaInterpreter <- function(interpreter,code,...,eval.only=FALSE,sim
 }
 
 "[.RScalaInterpreter" <- function(interpreter,code,...,eval.only=FALSE,simplify=TRUE,echo.output=FALSE) {
-  interpret(interpreter,code,...,eval.only=eval.only,simplify=simplify,echo.output=echo.output)
+  interpret.RScalaInterpreter(interpreter,code,...,eval.only=eval.only,simplify=simplify,echo.output=echo.output)
+}
+
+"$.RScalaInterpreter" <- function(interpreter,code,...,eval.only=FALSE,simplify=TRUE,echo.output=FALSE) {
+  interpret.RScalaInterpreter(interpreter,code,...,eval.only=eval.only,simplify=simplify,echo.output=echo.output)
 }
 
 "interpret<-.RScalaInterpreter" <- function(interpreter,varname,type=NULL,echo.output=FALSE,value) {
   if ( is.character(value) || is.numeric(value) || is.logical(value) ) {
     if ( length(value) == 1 ) {
-      result <- .jcall(interpreter$repl,"Lscala/tools/nsc/interpreter/Results$Result;","update",as.character(varname[1]),value)
+      result <- .jcall(interpreter[["repl"]],"Lscala/tools/nsc/interpreter/Results$Result;","update",as.character(varname[1]),value)
     } else {
-      result <- .jcall(interpreter$repl,"Lscala/tools/nsc/interpreter/Results$Result;","update",as.character(varname[1]),.jarray(value,dispatch=TRUE))
+      result <- .jcall(interpreter[["repl"]],"Lscala/tools/nsc/interpreter/Results$Result;","update",as.character(varname[1]),.jarray(value,dispatch=TRUE))
     }
   } else if ( inherits(value,"jobjRef") ) {
     if ( any(is.null(type)) ) type <- .jclass(value)
     value <- .jcast(value,"java/lang/Object")
-    result <- .jcall(interpreter$repl,"Lscala/tools/nsc/interpreter/Results$Result;","update",as.character(varname[1]),value,as.character(type[1]))
+    result <- .jcall(interpreter[["repl"]],"Lscala/tools/nsc/interpreter/Results$Result;","update",as.character(varname[1]),value,as.character(type[1]))
   } else stop("Unsupported data type")
   print.scala.output(interpreter,echo.output)
   if ( ! .jinherits(result,"scala.tools.nsc.interpreter.Results$Success$") ) {
@@ -161,7 +165,12 @@ interpret.RScalaInterpreter <- function(interpreter,code,...,eval.only=FALSE,sim
 }
 
 "[<-.RScalaInterpreter" <- function(interpreter,varname,type=NULL,echo.output=FALSE,value) {
-  interpret(interpreter,varname,type=type) <- value
-  return(interpreter)
+  "interpret<-.RScalaInterpreter"(interpreter,varname,type=type,echo.output=echo.output,value)
+  interpreter
+}
+
+"$<-.RScalaInterpreter" <- function(interpreter,varname,type=NULL,echo.output=FALSE,value) {
+  "interpret<-.RScalaInterpreter"(interpreter,varname,type=type,echo.output=echo.output,value)
+  interpreter
 }
 

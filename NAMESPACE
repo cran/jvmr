@@ -14,9 +14,15 @@ S3method("interpret","RJavaInterpreter")
 S3method("[", "RScalaInterpreter")
 S3method("[", "RJavaInterpreter")
 
+S3method("$", "RScalaInterpreter")
+#S3method("$", "RJavaInterpreter")
+
 S3method("interpret<-","RScalaInterpreter")
 S3method("interpret<-","RJavaInterpreter")
 
 S3method("[<-", "RScalaInterpreter")
 S3method("[<-", "RJavaInterpreter")
+
+S3method("$<-", "RScalaInterpreter")
+#S3method("$<-", "RJavaInterpreter")
 

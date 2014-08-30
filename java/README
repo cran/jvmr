@@ -1,5 +1,29 @@
-jvmr includes software from other projects.
-URLs to the source code and licenses are given below.
+The jvmr package downloads and installs open source software.  These components
+and their source code are available at:
+
+http://dahl.byu.edu/software/jvmr/alljars/VERSION
+
+where VERSION represents the version of the jvmr package.  For example:
+
+http://dahl.byu.edu/software/jvmr/alljars/2.11.2.1
+
+More specifically, the sources correspond to binary jars as follows:
+
+src/scala-*.tar.gz is the source for
+  bin/scala-reflect-*.jar
+  bin/scala-library-*.jar
+  bin/scala-compiler-*.jars
+
+src/jvmr_*-sources.jar is the source for
+  bin/jvmr_*.jar
+
+src/jline2-jline-*.tar.gz is the source for
+  bin/jline-*.jar
+
+src/bsh-*-src.zip is the source for
+  bin/bsh-*.jar
+
+URLs to the source code and licenses are also given below.
 
 ##### SCALA #####
 
